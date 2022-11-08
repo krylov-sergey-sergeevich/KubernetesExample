@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: my-replicaset
+spec:
+  replicas: 3 # кол-во pod из шаблона
+  selector:   # Это значит, что наш реплика сет будет считать все поды "своими" с таким лейблом
+    matchLabels:
+      app: my-app
+  template:   # Темплейт нам говорит, что все поды которые будут запущены будут иметь такой лейбл
+    # тут следует заметить, что мы не пишем имя для pod, оно будет сгенерировано динамически
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+          - containerPort: 80
