@@ -15,6 +15,9 @@ spec:
       containers:
       - image: nginx:1.14.2
         name: nginx
+        env: 
+          - name: TEST
+            value: foo
         ports:
         - containerPort: 80
         resources:
