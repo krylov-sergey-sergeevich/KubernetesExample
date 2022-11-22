@@ -1,0 +1,6 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local-storage
+provisioner: kubernetes.io/no-provisioner   # требует ручной настройки, когда админ сам ъодит и создает PV
+volumeBindingMode: WaitForFirstConsumer

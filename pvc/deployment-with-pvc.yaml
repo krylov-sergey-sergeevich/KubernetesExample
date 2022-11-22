@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment-with-pvc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fileshare
+  template:
+    metadata:
+      labels:
+        app: fileshare
+    spec:
+      initContainers:
+        - image: busybox
+          name: mount-permissions-fix
+          command: ["sh", "-c", "chmod 777 /data"]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      containers:
+        - image: centosadmin/reloadable-nginx:1.12
+          name: nginx
+          ports:
+          - containerPort: 80
+          resources:
+            requests: 
+              cpu: 100m # 100 милли цпу - это 
+              memory: 100Mi
+            limits:
+              cpu: 100m 
+              memory: 100Mi   
+          volumeMounts:
+            - name: config 
+              mountPath: /etc/nginx/conf.d
+            - name: data
+              mountPath: /data
+      volumes:
+      - name: config 
+        configMap:
+          name: fileshare
+      - name: data
+        persistentVolumeClaim:
+          claimName: fileshare
+            
+              
+          
