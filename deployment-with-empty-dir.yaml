@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment-with-empty-dir
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - image: nginx:1.14.2
+        name: nginx
+        ports:
+        - containerPort: 80
+        resources:
+          requests: 
+            cpu: 100m # 100 милли цпу - это 
+            memory: 100Mi
+          limits:
+            cpu: 100m 
+            memory: 100Mi
+        volumeMounts:
+        - name: data
+          mountPath: /files
+      volumes:
+      - name: data
+        emptyDir: {}
