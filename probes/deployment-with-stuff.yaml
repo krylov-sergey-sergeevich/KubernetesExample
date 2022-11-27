@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment-with-stuff
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+       maxSurge: 25%
+       maxUnavailable: 25% 
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - image: nginx:1.14.2
+        name: nginx
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          failureThreshold: 1
+          httpGet:
+            path: /app
+            port: 80
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: / 
+            port: 80
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+          initialDelaySeconds: 10
+        startupProbe:
+          failureThreshold: 30
+          httpGet:
+            path: / 
+            port: 80
+          periodSeconds: 10
+        resources:
+          requests: 
+            cpu: 100m # 100 милли цпу - это 
+            memory: 100Mi
+          limits:
+            cpu: 100m 
+            memory: 100Mi
+        volumeMounts:
+        - name: config
+          mountPath: /etc/nginx/conf.d
+        - name: podinfo
+          mountPath: /etc/podinfo
+      volumes:
+      - name: config
+        configMap:  
+          name: my-configmap-2
+      - name: podinfo
+        downwardAPI:
+          items:
+            - path: "labels" # файл в который запишутся все labels из манифеста
+              fieldRef:
+                fieldPath: metadata.labels
+            - path: "annotations" # файл в который запишутся все annotations из манифеста
+              fieldRef:
+                fieldPath: metadata.annotations
+          
