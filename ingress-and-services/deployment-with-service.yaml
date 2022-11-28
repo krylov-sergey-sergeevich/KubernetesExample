@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-deployment-with-stuff
+  name: my-deployment-with-service
 spec:
   replicas: 2
   strategy:
