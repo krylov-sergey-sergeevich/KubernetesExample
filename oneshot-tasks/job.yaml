@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hello
+spec:
+  backoffLimit: 2             # кол-во попыток
+  activeDeadlineSeconds: 60   # за 60 секунд должен job выполниться
+  template:
+    spec:
+      containers:
+      - name: hello
+        image: busybox
+        args:
+          - /bin/sh
+          - -c
+          - date; echo Hello from Kubernetes cluster
+      restartPolicy: Never
